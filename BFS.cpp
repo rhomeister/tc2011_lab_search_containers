@@ -7,6 +7,7 @@
 #include <queue>
 #include <stack>
 #include <set>
+#include <list>
 #include <utility>
 
 /*
@@ -16,7 +17,7 @@
 using namespace std; // std:: is implied.
 
 struct node{
-	//initial = [[a], [b], [c]]; goal = [[a, b], [x], [x]];
+	//initial = [[a], [b], [c]]; goal = [[b, a], [x], [x]];   **bottom to top
 	std::vector<stack <char> > state;
 
 	struct node *parent;
@@ -28,26 +29,37 @@ struct node{
 	int pathCost;	
 };
 
-int isGoal(struct node actual, vector<vector <char> > &goal)
+int isGoal(vector<stack <char> > actual, vector<stack <char> > goal)
 {
 	int i, j;
 	int res = 1;
 
+	//cout << "isGoal" << endl;
 	for(i = 0; i < goal.size(); i++)
 	{
-		if(goal[i][0] != 'X')
+		while( goal[i].size() > 0)
 		{
-			for(j = 0; j < goal[i].size(); j++)
-			{
-				if(goal[i][j] != actual.state[i].top())
+			if(goal[i].top() != 'X')
+			{			
+				if(actual[i].size() != goal[i].size())
+				{			
+					return 0;				
+				}
+				if(actual[i].top() != goal[i].top())
 				{
 					return 0;
 				}
-				actual.state[i].pop();
+
+				actual[i].pop();
+				goal[i].pop();
+			}
+			else
+			{
+				goal[i].pop();
 			}
 		}
 	}
-	cout << "Goal" << endl;
+	//cout << "Goal" << endl;
 	return res;
 }
 
@@ -55,20 +67,20 @@ int expandNode(struct node **child, struct node *parent, pair<int,int> action, i
 {	
 	char aux;
 
-	cout << "expand node" << endl;
+	//cout << "expand node" << endl;
 	//Only expand valid nodes
 	if( !(parent->state[action.first].empty()) && (parent->state[action.second].size() < limit))
-	{
-		cout << "valid" << endl;		
+	{		
 		(*child) = new node;
 
 		(*child)->parent = parent;
 		(*child)->state = parent->state;
 		(*child)->action = action;
+		(*child)->pathCost = parent->pathCost + 1;
 
 		//Adding element to new continer
 		aux = (*child)->state[action.first].top();
-		(*child)->state[action.second].push( aux );	
+		(*child)->state[action.second].push( aux );
 
 		//Removing element from origin container
 		(*child)->state[action.first].pop();
@@ -76,7 +88,7 @@ int expandNode(struct node **child, struct node *parent, pair<int,int> action, i
 		return 1;
 	}
 	return 0;
-	//resultState.pathCost = parent->pathCost + 1;
+
 }
 
 int main(int arg, char** argv)
@@ -85,10 +97,9 @@ int main(int arg, char** argv)
 	int fin = 0;
 	int i, j, maxHeight;
 
-	vector<char>temp;
-
-	stack<char>temp2;
-	vector<vector <char> > goalState;
+	stack<char>temp;
+	vector<stack <char> > goalState;
+	stack<pair <int, int> > solution;
 	pair<int,int>  action;
 
 	queue <struct node *> frontier;
@@ -104,19 +115,22 @@ int main(int arg, char** argv)
 	//Read to specify initial state
 	if(root != NULL){
 		cin >> box; 
-		temp2.push(box);
-		root->state.push_back(temp2);
-		temp2.pop();
+		temp.push(box);
+		cin >> box; 
+		temp.push(box);
+		root->state.push_back(temp);
+		temp.pop();
+		temp.pop();
 
 		cin >> box; 
-		temp2.push(box);
-		root->state.push_back(temp2);
-		temp2.pop();
+		temp.push(box);
+		root->state.push_back(temp);
+		temp.pop();
 
 		cin >> box; 
-		temp2.push(box);
-		root->state.push_back(temp2);
-		temp2.pop();
+		temp.push(box);
+		root->state.push_back(temp);
+		temp.pop();
 
 		root->parent = NULL;
 		root->pathCost = 0;
@@ -124,30 +138,30 @@ int main(int arg, char** argv)
 
 	//Read to specify goal state
 	cin >> box; 
-	temp.push_back(box);
+	temp.push(box);
+	cin >> box; 
+	temp.push(box);
 	goalState.push_back(temp);
-	temp.clear();
+	temp.pop();
+	temp.pop();
 
 	cin >> box; 
-	temp.push_back(box);
+	temp.push(box);
 	goalState.push_back(temp);
-	temp.clear();
+	temp.pop();
 
 	cin >> box; 
-	temp.push_back(box);
+	temp.push(box);
 	goalState.push_back(temp);
-	temp.clear();
+	temp.pop();
 
-	isGoal(*root, goalState);
+	isGoal(root->state, goalState);
 
 	//Step 1: Initialize the frontier using the initial state
 	frontier.push(root);
-	cout << "Frontier size: " << frontier.size() << endl;
 
 	//Step 2: Initialize the exprored set to be empty
 	explored.clear();
-	cout << "Explored size: " << explored.size() << endl;
-
 	do{
 		//Failure if the frontier is empty
 		if(frontier.empty())
@@ -159,20 +173,14 @@ int main(int arg, char** argv)
 		//Remove leaf node from frontier
 		actualNode = frontier.front();
 		frontier.pop();
-
-		cout << actualNode->action.first << endl;
-		cout << actualNode->action.second << endl;
 		
-		//Success if is the goal
-		//fin = isGoal(actualNode, goalState);
-
 		//Add the node to the explored set
 		explored.insert(actualNode);
 
 		//Expand the node 
-		for(i = 0; i < 3; i++)
+		for(i = 0; i < goalState.size(); i++)
 		{
-			for(j = 0; j < 3; j++)
+			for(j = 0; j < goalState.size(); j++)
 			{
 				if(i != j)		
 				{				
@@ -181,23 +189,62 @@ int main(int arg, char** argv)
 					{
 						//Add the resulting nodes to frontier
 						//Only if they are not in frontier or explored*/
-						cout << "action: (" << action.first << "," << action.second << ")" << endl;
-						
+						//cout << "action: (" << childNode->action.first << "," << childNode->action.second << ")" << endl;
+
 						it = explored.find(childNode);
 						if(it == explored.end())		//FALTA VERIFICAR SI NO ESTA EN FRONTIER... pero COMO?
 						{
 							//Success if is the goal
-							cout << "Goal?";
-							fin = isGoal(*childNode, goalState);
-							cout << fin << endl;
+							fin = isGoal(childNode->state, goalState);
+							
 							if(fin == 1)
 							{
+								/*if(childNode->state[0].size() > 0)
+								{
+									cout << childNode->state[0].top() << " = ";
+									cout << goalState[0].top() << endl;
+								}
+								else
+								{
+									cout << "-" <<endl;
+								}
+								if(childNode->state[1].size() > 0)
+								{
+									cout << childNode->state[1].top() << " = ";
+									cout << goalState[1].top() << endl;
+								}
+								else
+								{
+									cout << "-" <<endl;
+								}
+								if(childNode->state[2].size() > 0)
+								{
+									cout << childNode->state[2].top() << " = ";
+									cout << goalState[2].top() << endl;
+								}
+								else
+								{
+									cout << "-" <<endl;
+								}*/
+								cout << endl;
+								cout << childNode->pathCost << endl;
+
+								actualNode = childNode;
+								while(actualNode->parent != NULL)
+								{
+									solution.push(actualNode->action);
+									actualNode = actualNode->parent;
+								}
+
+								while(!(solution.empty()) )
+								{
+									cout << "(" << solution.top().first << "," << solution.top().second << ")  " << endl;
+									solution.pop();
+								}
 								return 1;
 							}
-
 							frontier.push(childNode);
 						}
-						
 					}
 				}
 			}
