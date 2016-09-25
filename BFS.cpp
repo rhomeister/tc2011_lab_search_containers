@@ -1,5 +1,5 @@
 #include <iostream>
-#include <string> // Gain access to std::string
+#include <string>
 #include <cstring>
 #include <cstdlib>
 
@@ -37,14 +37,14 @@ int isGoal(vector<stack <char> > actual, vector<stack <char> > goal)
 	//cout << "isGoal" << endl;
 	for(i = 0; i < goal.size(); i++)
 	{
+		if(actual[i].size() != goal[i].size())
+		{			
+			return 0;				
+		}
 		while( goal[i].size() > 0)
 		{
 			if(goal[i].top() != 'X')
 			{			
-				if(actual[i].size() != goal[i].size())
-				{			
-					return 0;				
-				}
 				if(actual[i].top() != goal[i].top())
 				{
 					return 0;
@@ -116,11 +116,11 @@ int main(int arg, char** argv)
 	if(root != NULL){
 		cin >> box; 
 		temp.push(box);
-		cin >> box; 
-		temp.push(box);
+		//cin >> box; 
+		//temp.push(box);
 		root->state.push_back(temp);
 		temp.pop();
-		temp.pop();
+		//temp.pop();
 
 		cin >> box; 
 		temp.push(box);
@@ -139,11 +139,11 @@ int main(int arg, char** argv)
 	//Read to specify goal state
 	cin >> box; 
 	temp.push(box);
-	cin >> box; 
-	temp.push(box);
+	//cin >> box; 
+	//temp.push(box);
 	goalState.push_back(temp);
 	temp.pop();
-	temp.pop();
+	//temp.pop();
 
 	cin >> box; 
 	temp.push(box);
@@ -250,6 +250,8 @@ int main(int arg, char** argv)
 			}
 		}
 	}while(frontier.size() > 0 && fin == 0);
+
+	cout << "No solution found" << endl;
 
 	return 0;
 }
