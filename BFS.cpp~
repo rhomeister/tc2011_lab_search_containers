@@ -26,7 +26,7 @@ struct node{
 	//3 = (1,2); 4 = (2,0); 5 = (2, 1);
 	std::pair<int,int>  action; 
 
-	int pathCost;	
+	//int pathCost;	
 };
 
 int isGoal(vector<stack <char> > actual, vector<stack <char> > goal)
@@ -76,7 +76,6 @@ int expandNode(struct node **child, struct node *parent, pair<int,int> action, i
 		(*child)->parent = parent;
 		(*child)->state = parent->state;
 		(*child)->action = action;
-		(*child)->pathCost = parent->pathCost + 1;
 
 		//Adding element to new continer
 		aux = (*child)->state[action.first].top();
@@ -116,11 +115,11 @@ int main(int arg, char** argv)
 	if(root != NULL){
 		cin >> box; 
 		temp.push(box);
-		//cin >> box; 
-		//temp.push(box);
+		cin >> box; 
+		temp.push(box);
 		root->state.push_back(temp);
 		temp.pop();
-		//temp.pop();
+		temp.pop();
 
 		cin >> box; 
 		temp.push(box);
@@ -133,17 +132,16 @@ int main(int arg, char** argv)
 		temp.pop();
 
 		root->parent = NULL;
-		root->pathCost = 0;
 	}
 
 	//Read to specify goal state
 	cin >> box; 
 	temp.push(box);
-	//cin >> box; 
-	//temp.push(box);
+	cin >> box; 
+	temp.push(box);
 	goalState.push_back(temp);
 	temp.pop();
-	//temp.pop();
+	temp.pop();
 
 	cin >> box; 
 	temp.push(box);
@@ -227,7 +225,6 @@ int main(int arg, char** argv)
 									cout << "-" <<endl;
 								}*/
 								cout << endl;
-								cout << childNode->pathCost << endl;
 
 								actualNode = childNode;
 								while(actualNode->parent != NULL)
@@ -251,7 +248,7 @@ int main(int arg, char** argv)
 		}
 	}while(frontier.size() > 0 && fin == 0);
 
-	cout << "No solution found" << endl.
+	cout << "No solution found" << endl;
 
 	return 0;
 }

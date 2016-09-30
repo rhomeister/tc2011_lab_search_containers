@@ -24,9 +24,7 @@ struct node{
 
 	//0 = (0,1); 1 = (0,2); 2 = (1,0); 
 	//3 = (1,2); 4 = (2,0); 5 = (2, 1);
-	std::pair<int,int>  action; 
-
-	int pathCost;	
+	std::pair<int,int>  action;
 };
 
 int isGoal(vector<stack <char> > actual, vector<stack <char> > goal)
@@ -34,7 +32,6 @@ int isGoal(vector<stack <char> > actual, vector<stack <char> > goal)
 	int i, j;
 	int res = 1;
 
-	//cout << "isGoal" << endl;
 	for(i = 0; i < goal.size(); i++)
 	{
 		if(actual[i].size() != goal[i].size())
@@ -59,7 +56,6 @@ int isGoal(vector<stack <char> > actual, vector<stack <char> > goal)
 			}
 		}
 	}
-	//cout << "Goal" << endl;
 	return res;
 }
 
@@ -67,7 +63,6 @@ int expandNode(struct node **child, struct node *parent, pair<int,int> action, i
 {	
 	char aux;
 
-	//cout << "expand node" << endl;
 	//Only expand valid nodes
 	if( !(parent->state[action.first].empty()) && (parent->state[action.second].size() < limit))
 	{		
@@ -76,7 +71,6 @@ int expandNode(struct node **child, struct node *parent, pair<int,int> action, i
 		(*child)->parent = parent;
 		(*child)->state = parent->state;
 		(*child)->action = action;
-		(*child)->pathCost = parent->pathCost + 1;
 
 		//Adding element to new continer
 		aux = (*child)->state[action.first].top();
@@ -116,11 +110,11 @@ int main(int arg, char** argv)
 	if(root != NULL){
 		cin >> box; 
 		temp.push(box);
-		//cin >> box; 
-		//temp.push(box);
+		cin >> box; 
+		temp.push(box);
 		root->state.push_back(temp);
 		temp.pop();
-		//temp.pop();
+		temp.pop();
 
 		cin >> box; 
 		temp.push(box);
@@ -133,17 +127,16 @@ int main(int arg, char** argv)
 		temp.pop();
 
 		root->parent = NULL;
-		root->pathCost = 0;
 	}
 
 	//Read to specify goal state
 	cin >> box; 
 	temp.push(box);
-	//cin >> box; 
-	//temp.push(box);
+	cin >> box; 
+	temp.push(box);
 	goalState.push_back(temp);
 	temp.pop();
-	//temp.pop();
+	temp.pop();
 
 	cin >> box; 
 	temp.push(box);
@@ -189,46 +182,15 @@ int main(int arg, char** argv)
 					{
 						//Add the resulting nodes to frontier
 						//Only if they are not in frontier or explored*/
-						//cout << "action: (" << childNode->action.first << "," << childNode->action.second << ")" << endl;
 
 						it = explored.find(childNode);
-						if(it == explored.end())		//FALTA VERIFICAR SI NO ESTA EN FRONTIER... pero COMO?
+						if(it == explored.end())
 						{
 							//Success if is the goal
 							fin = isGoal(childNode->state, goalState);
 							
 							if(fin == 1)
 							{
-								/*if(childNode->state[0].size() > 0)
-								{
-									cout << childNode->state[0].top() << " = ";
-									cout << goalState[0].top() << endl;
-								}
-								else
-								{
-									cout << "-" <<endl;
-								}
-								if(childNode->state[1].size() > 0)
-								{
-									cout << childNode->state[1].top() << " = ";
-									cout << goalState[1].top() << endl;
-								}
-								else
-								{
-									cout << "-" <<endl;
-								}
-								if(childNode->state[2].size() > 0)
-								{
-									cout << childNode->state[2].top() << " = ";
-									cout << goalState[2].top() << endl;
-								}
-								else
-								{
-									cout << "-" <<endl;
-								}*/
-								cout << endl;
-								cout << childNode->pathCost << endl;
-
 								actualNode = childNode;
 								while(actualNode->parent != NULL)
 								{
