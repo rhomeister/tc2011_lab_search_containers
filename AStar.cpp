@@ -173,6 +173,9 @@ int main(int arg, char** argv)
 	struct node *childNode = new node;
 
 	cin >> maxHeight; 
+	getline(cin,init);//to catch the \n char in the first line
+	getline(cin,init);
+	getline(cin,goal);
 
 	//Read to specify initial state
 	if(root != NULL){
