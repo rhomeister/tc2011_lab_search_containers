@@ -91,6 +91,8 @@ int main(int arg, char** argv)
 	int fin = 0;
 	int i, j, maxHeight;
 
+	string init,goal; //auxiliar buffers
+
 	stack<char>temp;
 	vector<stack <char> > goalState;
 	stack<pair <int, int> > solution;
@@ -104,49 +106,48 @@ int main(int arg, char** argv)
 	struct node *actualNode = new node;
 	struct node *childNode = new node;
 
-	cin >> maxHeight; 
+	cin >> maxHeight;
+	getline(cin,init);//to catch the \n char in the first line
+	getline(cin,init);
+	getline(cin,goal); 
 
 	//Read to specify initial state
 	if(root != NULL){
-		cin >> box; 
-		temp.push(box);
-		cin >> box; 
-		temp.push(box);
-		root->state.push_back(temp);
-		temp.pop();
-		temp.pop();
-
-		cin >> box; 
-		temp.push(box);
-		root->state.push_back(temp);
-		temp.pop();
-
-		cin >> box; 
-		temp.push(box);
-		root->state.push_back(temp);
-		temp.pop();
+		for(int k =0;k < init.length(); k++){
+			if(init[k]=='('){ //new container
+				while(!temp.empty())//to empty the stack
+					temp.pop();
+			}else if(init[k]==')'){//finish the container
+				root->state.push_back(temp);
+			}else if(init[k]>=65 && init[k]<=90){//char from A to Z
+				temp.push(init[k]);
+			}
+		}
+		while(!temp.empty()) //to empty the stack
+				temp.pop();
 
 		root->parent = NULL;
 	}
 
 	//Read to specify goal state
-	cin >> box; 
-	temp.push(box);
-	cin >> box; 
-	temp.push(box);
-	goalState.push_back(temp);
-	temp.pop();
-	temp.pop();
+	for(int k =0;k < goal.length(); k++){
+		if(goal[k]=='X'){ //Don't care
+			temp.push(goal[k]);
+			goalState.push_back(temp);
+			while(!temp.empty()) //to empty the stack
+				temp.pop();
+		}else if(goal[k]=='(' || goal[k]==';'){ //new container
+			while(!temp.empty()) //to empty the stack
+				temp.pop();
+		}else if(goal[k]==')'){//finish the container
+			goalState.push_back(temp);
+		}else if(goal[k]>=65 && goal[k]<=90){//char from A to Z
+			temp.push(goal[k]);
+		}
+	}
 
-	cin >> box; 
-	temp.push(box);
-	goalState.push_back(temp);
-	temp.pop();
-
-	cin >> box; 
-	temp.push(box);
-	goalState.push_back(temp);
-	temp.pop();
+	while(!temp.empty()) //to empty the stack
+		temp.pop();
 
 	isGoal(root->state, goalState);
 
