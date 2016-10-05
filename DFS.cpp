@@ -22,11 +22,8 @@ struct node{
 
 	struct node *parent;
 
-	//0 = (0,1); 1 = (0,2); 2 = (1,0); 
-	//3 = (1,2); 4 = (2,0); 5 = (2, 1);
+	//(0,1), (0,2), (1,0), (1,2), (2,0), (2, 1)
 	std::pair<int,int>  action; 
-
-	//int pathCost;	
 };
 
 int isGoal(vector<stack <char> > actual, vector<stack <char> > goal)
@@ -34,7 +31,6 @@ int isGoal(vector<stack <char> > actual, vector<stack <char> > goal)
 	int i, j;
 	int res = 1;
 
-	cout << "isGoal" << endl;
 	for(i = 0; i < goal.size(); i++)
 	{
 		if(actual[i].size() != goal[i].size())
@@ -59,7 +55,6 @@ int isGoal(vector<stack <char> > actual, vector<stack <char> > goal)
 			}
 		}
 	}
-	cout << "Goal" << endl;
 	return res;
 }
 
@@ -67,7 +62,6 @@ int expandNode(struct node **child, struct node *parent, pair<int,int> action, i
 {	
 	char aux;
 
-	cout << "expand node" << endl;
 	//Only expand valid nodes
 	if( !(parent->state[action.first].empty()) && (parent->state[action.second].size() < limit))
 	{		
@@ -132,7 +126,6 @@ int main(int arg, char** argv)
 				temp.pop();
 
 		root->parent = NULL;
-		//root->pathCost = 0;
 	}
 
 	//Read to specify goal state
@@ -174,7 +167,6 @@ int main(int arg, char** argv)
 		//Remove leaf node from frontier
 		actualNode = frontier.top();
 		frontier.pop();
-		cout << actualNode->action.first << " , " << actualNode->action.second << endl;
 		
 		//Add the node to the explored set
 		explored.insert(actualNode->state);
@@ -191,10 +183,9 @@ int main(int arg, char** argv)
 					{
 						//Add the resulting nodes to frontier
 						//Only if they are not in frontier or explored
-						cout << "action: (" << childNode->action.first << "," << childNode->action.second << ")" << endl;
 
 						it = explored.find(childNode->state);
-						if(it == explored.end())		//FALTA VERIFICAR SI NO ESTA EN FRONTIER... pero COMO?
+						if(it == explored.end())
 						{
 							//Success if is the goal
 							fin = isGoal(childNode->state, goalState);
@@ -217,15 +208,10 @@ int main(int arg, char** argv)
 							}
 							frontier.push(childNode);
 						}
-						else
-						{
-							cout << "Explorado" << endl;
-						}
 					}
 				}
 			}
 		}
-		//cin >> wait;
 	}while(frontier.size() > 0 && fin == 0);
 
 	cout << "No solution found" << endl;

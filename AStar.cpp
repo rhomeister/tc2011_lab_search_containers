@@ -238,14 +238,10 @@ int main(int arg, char** argv)
 
 		}while(isInFrontier.erase(actualNode->state) != 1);  
 
-		cout << endl;
-		//cout << "LEAF:  " << actualNode->action.first << "," << actualNode->action.second << endl;
-		//cout << "g: " << actualNode->gCost << "h: " << actualNode->hCost << endl;
 
 		//Success if is the goal				
 		if(isGoal(actualNode->state, goalState) == 1)
 		{
-			cout << "GOOAL" << endl;
 			cout << actualNode->gCost << endl;
 			
 			while(actualNode->parent != NULL)
@@ -278,9 +274,7 @@ int main(int arg, char** argv)
 					{
 						//Add the resulting nodes to frontier
 						//Only if they are not in frontier or explored
-						//cout << "action: (" << childNode->action.first << "," << childNode->action.second << ")" << endl;
 						childNode->hCost = heuristic(childNode->state, goalState);
-						//cout << "g: " << childNode->gCost << " h: " << childNode->hCost << endl;
 
 						itExplored = explored.find(childNode->state);
 						itFrontier = isInFrontier.find(childNode->state);

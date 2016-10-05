@@ -33,27 +33,25 @@ int isGoal(vector<stack <char> > actual, vector<stack <char> > goal)
 	int res = 1;
 
 	for(i = 0; i < goal.size(); i++)
-	{
-		if(actual[i].size() != goal[i].size())
+	{		
+		if( goal[i].size() > 0 && goal[i].top() == 'X')
+		{
+			goal[i].pop();
+			continue;
+		}
+		else if(actual[i].size() != goal[i].size())
 		{			
 			return 0;				
 		}
 		while( goal[i].size() > 0)
 		{
-			if(goal[i].top() != 'X')
-			{			
-				if(actual[i].top() != goal[i].top())
-				{
-					return 0;
-				}
-
-				actual[i].pop();
-				goal[i].pop();
-			}
-			else
+			if(actual[i].top() != goal[i].top())
 			{
-				goal[i].pop();
+				return 0;
 			}
+
+			actual[i].pop();
+			goal[i].pop();
 		}
 	}
 	return res;
