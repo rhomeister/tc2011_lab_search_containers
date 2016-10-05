@@ -69,59 +69,7 @@ int isGoal(vector<stack <char> > actual, vector<stack <char> > goal)
 	return res;
 }
 
-int heuristic(vector<stack <char> > actual, vector<stack <char> > goal)
-{
-	int i, j, dif;
-	int s1, s2;
-	int res = 0;
 
-	for(i = 0; i < goal.size(); i++)
-	{
-		while( goal[i].size() > 0 && actual[i].size() > 0)
-		{
-			if(goal[i].top() != 'X')
-			{		
-				dif = actual[i].size() - goal[i].size();
-				if( dif > 0 )	
-				{
-					while(dif > 0)
-					{
-						actual[i].pop();
-						res++;
-						dif--;
-					}
-				}	
-				else if( dif < 0 )		
-				{
-					while(dif < 0)
-					{
-						goal[i].pop();
-						res++;
-						dif++;
-					}
-				}
-				
-				if(actual[i].top() != goal[i].top())
-				{
-					res++;
-				}
-
-				actual[i].pop();
-				goal[i].pop();
-			}
-			else
-			{
-				goal[i].pop();
-				do
-				{
-					actual[i].pop();
-				}while(actual[i].size() > 0);
-
-			}
-		}
-	}
-	return res;//consistent
-}
 
 int expandNode(struct node **child, struct node *parent, pair<int,int> action, int limit)
 {	
@@ -215,7 +163,7 @@ int main(int arg, char** argv)
 	while(!temp.empty()) //to empty the temp stack
 		temp.pop();
 
-	root->hCost = heuristic(root->state, goalState);
+	root->hCost = root->gCost*2;
 
 	//Step 1: Initialize the frontier using the initial state
 	frontier.push( root );
@@ -276,7 +224,7 @@ int main(int arg, char** argv)
 					{
 						//Add the resulting nodes to frontier
 						//Only if they are not in frontier or explored
-						childNode->hCost = heuristic(childNode->state, goalState);
+						childNode->hCost = childNode->gCost*2;
 
 						itExplored = explored.find(childNode->state);
 						itFrontier = isInFrontier.find(childNode->state);
