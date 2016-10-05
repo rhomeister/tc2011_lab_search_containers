@@ -93,6 +93,7 @@ int main(int arg, char** argv)
 
 	stack<char>temp;
 	vector<stack <char> > goalState;
+	vector<stack <char> > debugState; //for debug purpose
 	stack<pair <int, int> > solution;
 	pair<int,int>  action;
 
@@ -126,6 +127,18 @@ int main(int arg, char** argv)
 
 		root->parent = NULL;
 	}
+	/*
+	debugState = root->state;
+	cout << "debug part: inputs\n";
+	cout << "init State\n";
+	for(int k=0;k<debugState.size();k++){
+		cout << "container " << k << '\n';
+		while(!debugState[k].empty()){
+			cout<<debugState[k].top()<<' ';
+			debugState[k].pop();
+		}
+		cout << '\n';
+	}*/
 
 	//Read to specify goal state
 	for(int k =0;k < goal.length(); k++){
@@ -146,6 +159,17 @@ int main(int arg, char** argv)
 
 	while(!temp.empty()) //to empty the stack
 		temp.pop();
+	/*
+	debugState = goalState;
+	cout << "goal State\n";
+	for(int k=0;k<debugState.size();k++){
+		cout << "container " << k << '\n';
+		while(!debugState[k].empty()){
+			cout<<debugState[k].top()<<' ';
+			debugState[k].pop();
+		}
+		cout << '\n';
+	}*/
 
 	isGoal(root->state, goalState);
 
